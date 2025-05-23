@@ -31,7 +31,7 @@ class TodoRequest(BaseModel):
     complete: bool
 
 
-
+#Read All
 @router.get('/', status_code=status.HTTP_200_OK)
 def read_all(user: user_dependency, db: db_dependency):
 
