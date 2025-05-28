@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from datetime import timedelta, timezone, datetime
 from pydantic import BaseModel
 from models import Users
@@ -9,6 +9,8 @@ from starlette import status
 from database import  SessionLocal
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
+from fastapi.templating import Jinja2Templates
+from pathlib import Path
 
 
 router = APIRouter(
@@ -50,6 +52,20 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)] 
 
+#HTML page templates
+BASE_DIR = Path(__file__).resolve().parent.parent 
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+### Pages ###
+@router.get('/login-page')
+def render_login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+
+
+
+
+### End Points ###
 def authenticate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
